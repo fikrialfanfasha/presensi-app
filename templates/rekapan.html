@@ -5,14 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rekapan Absensi</title>
     <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
 <body>
     <div class="container mt-5">
         <div class="box has-shadow">
             <h1 class="title has-text-centered mb-4">Rekapan Absensi Siswa - Bulan {{ current_month }}</h1>
             <div class="buttons is-centered mb-4">
-                <a href="{{ url_for('index') }}" class="button is-primary">Kembali</a>
-                <a href="{{ url_for('export_excel') }}" class="button is-success">Ekspor ke Excel</a>
+                <a href="{{ url_for('index') }}" class="button is-primary">
+                    <span class="icon"><i class="fas fa-arrow-left"></i></span>
+                    <span>Kembali</span>
+                </a>
+                <a href="{{ url_for('export_excel') }}" class="button is-success">
+                    <span class="icon"><i class="fas fa-file-excel"></i></span>
+                    <span>Ekspor ke Excel</span>
+                </a>
             </div>
             <div class="table-container">
                 <table class="table is-striped is-bordered is-fullwidth">

@@ -6,6 +6,7 @@
     <title>Aplikasi Cek Kehadiran Siswa</title>
     <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
 <body>
     <section class="hero is-fullheight is-flex is-align-items-center">
@@ -20,7 +21,10 @@
                         <h4 class="subtitle">Tanggal: {{ current_date }}</h4>
                     </div>
                     <div class="has-text-centered mb-4">
-                        <a href="{{ url_for('rekapan') }}" class="button is-primary">Lihat Rekapan Absensi</a>
+                        <a href="{{ url_for('rekapan') }}" class="button is-primary">
+                            <span class="icon"><i class="fas fa-clipboard-list"></i></span>
+                            <span>Lihat Rekapan Absensi</span>
+                        </a>
                     </div>
                     
                     {% if file_exists %}
@@ -60,7 +64,10 @@
                             </table>
                         </div>
                         <div class="has-text-centered mt-4">
-                            <button type="submit" class="button is-primary" {% if file_exists %}disabled{% endif %}>Simpan Kehadiran</button>
+                            <button type="submit" class="button is-primary" {% if file_exists %}disabled{% endif %}>
+                                <span class="icon"><i class="fas fa-save"></i></span>
+                                <span>Simpan Kehadiran</span>
+                            </button>
                         </div>
                     </form>
                 </div>

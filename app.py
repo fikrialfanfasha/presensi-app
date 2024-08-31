@@ -137,7 +137,7 @@ def export_excel():
     return send_file(
         output,
         as_attachment=True,
-        download_name=f'rekapan_absensi_XI_RPL_1_{current_month}.xlsx',
+        download_name=f'rekapan_absensi_XI_RPL_2_{current_month}.xlsx',
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
 
