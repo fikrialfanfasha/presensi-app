@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Check</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Cek Kehadiran Siswa</h1>
+        <div class="text-center mb-4">
+            <h4>Tanggal: {{ current_date }}</h4>
+        </div>
+        
+        {% if file_exists %}
+        <div class="alert alert-info text-center" role="alert">
+            Kehadiran hari ini sudah diinput.
+        </div>
+        {% endif %}
+        
+        <form method="POST" {% if file_exists %}class="disabled-form"{% endif %}>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>NIS</th>
+                            <th>Nama Siswa</th>
+                            <th>Kehadiran</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student['nis'] }}</td>
+                            <td>{{ student['nama'] }}</td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="attendance_{{ student['nis'] }}" value="Sakit" id="sakit_{{ student['nis'] }}" {% if file_exists %}disabled{% endif %}>
+                                    <label class="form-check-label" for="sakit_{{ student['nis'] }}">Sakit</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="attendance_{{ student['nis'] }}" value="Izin" id="izin_{{ student['nis'] }}" {% if file_exists %}disabled{% endif %}>
+                                    <label class="form-check-label" for="izin_{{ student['nis'] }}">Izin</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="attendance_{{ student['nis'] }}" value="Alfa" id="alfa_{{ student['nis'] }}" {% if file_exists %}disabled{% endif %}>
+                                    <label class="form-check-label" for="alfa_{{ student['nis'] }}">Alfa</label>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary" {% if file_exists %}disabled{% endif %}>Simpan Kehadiran</button>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .disabled-form {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+    </style>
+</body>
+</html>
