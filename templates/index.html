@@ -14,6 +14,9 @@
                 <div class="box">
                     <h1 class="title has-text-centered">Cek Kehadiran Siswa</h1>
                     <div class="has-text-centered mb-4">
+                        <h2>XI RPL 2</h2>
+                    </div>
+                    <div class="has-text-centered mb-4">
                         <h4 class="subtitle">Tanggal: {{ current_date }}</h4>
                     </div>
                     <div class="has-text-centered mb-4">
@@ -42,19 +45,13 @@
                                         <td>{{ student['nis'] }}</td>
                                         <td>{{ student['nama'] }}</td>
                                         <td>
-                                            <div class="control">
-                                                <label class="radio">
-                                                    <input type="radio" name="attendance_{{ student['nis'] }}" value="Sakit" id="sakit_{{ student['nis'] }}" {% if file_exists %}disabled{% endif %}>
-                                                    Sakit
-                                                </label>
-                                                <label class="radio">
-                                                    <input type="radio" name="attendance_{{ student['nis'] }}" value="Izin" id="izin_{{ student['nis'] }}" {% if file_exists %}disabled{% endif %}>
-                                                    Izin
-                                                </label>
-                                                <label class="radio">
-                                                    <input type="radio" name="attendance_{{ student['nis'] }}" value="Alfa" id="alfa_{{ student['nis'] }}" {% if file_exists %}disabled{% endif %}>
-                                                    Alfa
-                                                </label>
+                                            <div class="select">
+                                                <select name="attendance_{{ student['nis'] }}" {% if file_exists %}disabled{% endif %}>
+                                                    <option value="Hadir" {% if not file_exists and student['attendance'] == 'Hadir' %}selected{% endif %}>Hadir</option>
+                                                    <option value="Sakit" {% if not file_exists and student['attendance'] == 'Sakit' %}selected{% endif %}>Sakit</option>
+                                                    <option value="Izin" {% if not file_exists and student['attendance'] == 'Izin' %}selected{% endif %}>Izin</option>
+                                                    <option value="Alfa" {% if not file_exists and student['attendance'] == 'Alfa' %}selected{% endif %}>Alfa</option>
+                                                </select>
                                             </div>
                                         </td>
                                     </tr>

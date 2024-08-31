@@ -42,7 +42,7 @@ def load_attendance():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     students = load_students()
-    current_date = datetime.now().strftime('%d-%m-%Y')
+    current_date = datetime.now().strftime('%d %B %Y')  
     file_exists = os.path.isfile(f'data/attendance_{datetime.now().strftime("%Y-%m-%d")}.csv')
     
     if request.method == 'POST' and not file_exists:
@@ -57,7 +57,7 @@ def index():
 
 @app.route('/rekapan')
 def rekapan():
-    current_month = datetime.now().strftime('%m-%Y')
+    current_month = datetime.now().strftime('%B %Y')  
     attendance_records = load_attendance()
     students = load_students()
     days = [f'{i:02}' for i in range(1, 32)]
@@ -80,7 +80,7 @@ def rekapan():
 
 @app.route('/export_excel')
 def export_excel():
-    current_month = datetime.now().strftime('%m/%Y') 
+    current_month = datetime.now().strftime('%B_%Y')  # Nama bulan dan tahun
     attendance_records = load_attendance()
     students = load_students()
     days = [f'{i:02}' for i in range(1, 32)]
@@ -103,7 +103,7 @@ def export_excel():
     for student in students:
         row = {'NIS': student['nis'], 'Nama Siswa': student['nama']}
         for day in days:
-            header = f'{day}/{current_month.split("/")[0]}'
+            header = f'{day}/{datetime.now().strftime("%m")}'
             row[header] = student_attendance[student['nis']].get(day, '')
         data.append(row)
     
@@ -137,7 +137,7 @@ def export_excel():
     return send_file(
         output,
         as_attachment=True,
-        download_name=f'rekapan absensi XI RPL 2_{current_month}.xlsx',
+        download_name=f'rekapan_absensi_XI_RPL_1_{current_month}.xlsx',
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
 
