@@ -12,6 +12,7 @@
         <h1 class="text-center mb-4">Rekapan Absensi Siswa - Bulan {{ current_month }}</h1>
         <div class="text-center mb-4">
             <a href="{{ url_for('index') }}" class="btn btn-primary">Kembali</a>
+            <a href="{{ url_for('export_excel') }}" class="btn btn-success">Ekspor ke Excel</a>
         </div>
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
