@@ -5,13 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" rel="stylesheet">
+    <style>
+        .control{
+            text-align :center;
+            
+        }
+
+        .box{
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
 </head>
 <body>
     <section class="hero is-fullheight is-flex is-align-items-center">
         <div class="container">
             <div class="hero-body">
                 <div class="box">
-                    <h1 class="title has-text-centered">Login</h1>
+                    <h1 class="title has-text-centered">Login - Absensi</h1>
                     <form method="POST" action="{{ url_for('login') }}">
                         <div class="field">
                             <label class="label">Username</label>

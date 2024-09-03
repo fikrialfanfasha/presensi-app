@@ -73,7 +73,7 @@ def index():
     students = load_students()
     current_date = datetime.now().strftime('%A, %d %B %Y')
     classes = sorted(set(student['kelas'] for student in students))
-    selected_class = request.args.get('kelas', classes[0])  # Default ke kelas pertama
+    selected_class = request.args.get('kelas', classes[0])
     filtered_students = [s for s in students if s['kelas'] == selected_class]
     
     date_str = datetime.now().strftime('%Y-%m-%d')
@@ -116,13 +116,11 @@ def rekapan():
     num_days = calendar.monthrange(year, month)[1]
     days = [f'{i:02}' for i in range(1, num_days + 1)]
     
-    # Inisialisasi absensi per siswa
     student_attendance = {}
     for student in filtered_students:
         nis = student['nis']
         student_attendance[nis] = {day: '' for day in days}
     
-    # Mengisi absensi
     for record in attendance_records:
         if record['Kelas'] != selected_class:
             continue
@@ -155,13 +153,11 @@ def export_excel():
     num_days = calendar.monthrange(year, month)[1]
     days = [f'{i:02}' for i in range(1, num_days + 1)]
     
-    # Inisialisasi absensi per siswa
     student_attendance = {}
     for student in filtered_students:
         nis = student['nis']
         student_attendance[nis] = {day: '' for day in days}
     
-    # Mengisi absensi
     for record in attendance_records:
         if record['Kelas'] != selected_class:
             continue
@@ -169,7 +165,6 @@ def export_excel():
         if record_date in student_attendance.get(record['NIS'], {}):
             student_attendance[record['NIS']][record_date] = record['Kehadiran']
     
-    # Menyiapkan data untuk Excel
     data = []
     for student in filtered_students:
         row = {
@@ -183,12 +178,10 @@ def export_excel():
     
     df = pd.DataFrame(data)
     
-    # Membuat Workbook Excel
     wb = Workbook()
     ws = wb.active
     ws.title = "Rekapan Absensi"
     
-    # Menambahkan data ke worksheet
     for r_idx, row in enumerate(dataframe_to_rows(df, index=False, header=True), 1):
         for c_idx, value in enumerate(row, 1):
             cell = ws.cell(row=r_idx, column=c_idx, value=value)
@@ -200,13 +193,11 @@ def export_excel():
             )
             cell.alignment = Alignment(horizontal='center', vertical='center')
     
-    # Menyesuaikan lebar kolom
     for col in ws.columns:
         max_length = max(len(str(cell.value)) if cell.value else 0 for cell in col)
         adjusted_width = (max_length + 2)
         ws.column_dimensions[col[0].column_letter].width = adjusted_width
     
-    # Menyimpan workbook ke dalam BytesIO
     output = io.BytesIO()
     wb.save(output)
     output.seek(0)
