@@ -11,6 +11,22 @@
     <div class="container mt-5">
         <div class="box has-shadow">
             <h1 class="title has-text-centered mb-4">Rekapan Absensi Siswa - Bulan {{ current_month }}</h1>
+            <div class="columns is-centered">
+                <div class="column is-narrow">
+                    <div class="field">
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                <select id="class-selector">
+                                    <option selected disabled>Pilih Kelas</option>
+                                    {% for class in classes %}
+                                    <option value="{{ class }}">{{ class }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="buttons is-centered mb-4">
                 <a href="{{ url_for('index') }}" class="button is-primary">
                     <span class="icon"><i class="fas fa-arrow-left"></i></span>
@@ -52,5 +68,13 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bulma@0.9.4/js/bulma.min.js"></script>
+    <script>
+        // Script untuk menangani perubahan dropdown kelas
+        document.getElementById('class-selector').addEventListener('change', function() {
+            const selectedClass = this.value;
+            window.location.href = "{{ url_for('rekapan', kelas='') }}" + selectedClass;
+        });
+            
+    </script>
 </body>
 </html>

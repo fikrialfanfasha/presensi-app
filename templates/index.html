@@ -1,60 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi Cek Kehadiran Siswa</title>
     <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        .table tbody tr:nth-child(even) {
+            background-color: #f5f5f5; 
+        }
+        .table td, .table th {
+            vertical-align: middle;
+        }
+        .disabled-form {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #f5f5f5;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+    </style>
 </head>
 <body>
+    <nav class="navbar is-primary">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{{ url_for('index') }}">
+                Cek Kehadiran
+            </a>
+        </div>
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <a class="button is-light" href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </nav>
     <section class="hero is-fullheight is-flex is-align-items-center">
         <div class="container">
             <div class="hero-body">
                 <div class="box">
                     <h1 class="title has-text-centered">Cek Kehadiran Siswa</h1>
-                    <div class="has-text-centered mb-4">
-                        <h2>XI RPL 2</h2>
+
+                    <div class="field has-text-centered">
+                        <label class="label">Pilih Kelas</label>
+                        <div class="control">
+                            <div class="select">
+                                <form method="GET" action="{{ url_for('index') }}">
+                                    <select name="kelas" onchange="this.form.submit()">
+                                        {% for kelas in classes %}
+                                        <option value="{{ kelas }}" {% if kelas == selected_class %}selected{% endif %}>{{ kelas }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="has-text-centered mb-4">
                         <h4 class="subtitle">Tanggal: {{ current_date }}</h4>
                     </div>
                     <div class="has-text-centered mb-4">
-                        <a href="{{ url_for('rekapan') }}" class="button is-primary">
+                        <a href="{{ url_for('rekapan', kelas=selected_class) }}" class="button is-info is-small">
                             <span class="icon"><i class="fas fa-clipboard-list"></i></span>
-                            <span>Lihat Rekapan Absensi</span>
+                            <span>Lihat Rekapan</span>
                         </a>
                     </div>
-                    
+
                     {% if file_exists %}
                     <div class="notification is-info has-text-centered">
                         Kehadiran hari ini sudah diinput.
                     </div>
                     {% endif %}
-                    
-                    <form method="POST" {% if file_exists %}class="disabled-form"{% endif %}>
+
+                    <form method="POST" action="{{ url_for('index', kelas=selected_class) }}" {% if file_exists %}class="disabled-form"{% endif %} id="attendance-form">
                         <div class="table-container">
                             <table class="table is-striped is-bordered is-fullwidth">
                                 <thead>
                                     <tr>
+                                        <th>No</th>
                                         <th>NIS</th>
                                         <th>Nama Siswa</th>
                                         <th>Kehadiran</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="student-table-body">
                                     {% for student in students %}
                                     <tr>
-                                        <td>{{ student['nis'] }}</td>
-                                        <td>{{ student['nama'] }}</td>
+                                        <td></td>
+                                        <td>{{ student.nis }}</td>
+                                        <td>{{ student.nama }}</td>
                                         <td>
                                             <div class="select">
-                                                <select name="attendance_{{ student['nis'] }}" {% if file_exists %}disabled{% endif %}>
-                                                    <option value="Hadir" {% if not file_exists and student['attendance'] == 'Hadir' %}selected{% endif %}>Hadir</option>
-                                                    <option value="Sakit" {% if not file_exists and student['attendance'] == 'Sakit' %}selected{% endif %}>Sakit</option>
-                                                    <option value="Izin" {% if not file_exists and student['attendance'] == 'Izin' %}selected{% endif %}>Izin</option>
-                                                    <option value="Alfa" {% if not file_exists and student['attendance'] == 'Alfa' %}selected{% endif %}>Alfa</option>
+                                                <select name="attendance_{{ student.nis }}" {% if file_exists %}disabled{% endif %}>
+                                                    <option value="Hadir" {% if not file_exists and student_attendance and student_attendance[student.nis] == 'Hadir' %}selected{% endif %}>Hadir</option>
+                                                    <option value="Sakit" {% if not file_exists and student_attendance and student_attendance[student.nis] == 'Sakit' %}selected{% endif %}>Sakit</option>
+                                                    <option value="Izin" {% if not file_exists and student_attendance and student_attendance[student.nis] == 'Izin' %}selected{% endif %}>Izin</option>
+                                                    <option value="Alfa" {% if not file_exists and student_attendance and student_attendance[student.nis] == 'Alfa' %}selected{% endif %}>Alfa</option>
                                                 </select>
                                             </div>
                                         </td>
@@ -63,16 +111,36 @@
                                 </tbody>
                             </table>
                         </div>
+                        {% if not file_exists %}
                         <div class="has-text-centered mt-4">
-                            <button type="submit" class="button is-primary" {% if file_exists %}disabled{% endif %}>
+                            <button type="submit" class="button is-primary" onclick="return confirmSave()">
                                 <span class="icon"><i class="fas fa-save"></i></span>
                                 <span>Simpan Kehadiran</span>
                             </button>
                         </div>
+                        {% endif %}
                     </form>
                 </div>
             </div>
         </div>
     </section>
+    
+    <footer>
+        <span class="fab fa-instagram"></span>
+        <span style="font-family: inherit;"><a href="https://instagram.com/fikrialfanf" target="_blank">@fikrialfanf</a></span>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tableRows = document.querySelectorAll('#student-table-body tr');
+            tableRows.forEach((row, index) => {
+                row.querySelector('td').textContent = index + 1;
+            });
+        });
+
+        function confirmSave() {
+            return confirm('Apakah Anda yakin ingin menyimpan data kehadiran? ');
+        }
+    </script>
 </body>
 </html>
